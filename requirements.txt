@@ -4,3 +4,5 @@ pytorch-transformers
 numpy >= 1.18.2
 joblib
 scikit-learn >= 0.22.2
+os
+wget

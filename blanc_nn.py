@@ -1,5 +1,7 @@
 from pytorch_transformers import GPT2Tokenizer, GPT2LMHeadModel
 import torch
+import os
+import wget
 import numpy as np
 from fairseq.models.roberta import RobertaModel
 from joblib import load
@@ -13,9 +15,37 @@ AGGREGATOR_2015_2017 = \
     'pretrained/aggregators/nn_2015_2017_6_dim' \
     '.joblib'
 
+ROBERTA_STS_URL = "https://blanc-nn.s3.amazonaws.com/" \
+                  "neural-feature-extractors/checkpoint_best.pt"
+ROBERTA_MNLI_URL = "https://blanc-nn.s3.amazonaws.com/" \
+                   "neural-feature-extractors/model_mnli.pt"
+AGGREGATOR_2015_2016_URL = "https://blanc-nn.s3.amazonaws.com/" \
+                           "aggregators/nn_2015_2016_6_dim.joblib"
+AGGREGATOR_2015_2017_URL = "https://blanc-nn.s3.amazonaws.com/" \
+                           "aggregators/nn_2015_2017_6_dim.joblib"
 
 class Blanc:
     def __init__(self):
+        if not os.path.isfile(AGGREGATOR_2015_2016):
+            print("Downloading aggregators from s3...")
+            wget.download(AGGREGATOR_2015_2016_URL,
+                                AGGREGATOR_2015_2016,
+                                bar=self._download_prgoress_bar)
+        if not os.path.isfile(AGGREGATOR_2015_2017):
+            print("Downloading aggregators from s3...")
+            wget.download(AGGREGATOR_2015_2017_URL,
+                                AGGREGATOR_2015_2017,
+                                bar=self._download_prgoress_bar)
+        if not os.path.isfile(ROBERTA_STS_PATH + '/checkpoint_best.pt'):
+            print("Downloading ROBERTA STS model from s3...")
+            wget.download(ROBERTA_STS_URL, ROBERTA_STS_PATH +
+                          '/checkpoint_best.pt',
+                          bar=self._download_prgoress_bar)
+        if not os.path.isfile(ROBERTA_MNLI_PATH + 'model_mnli.pt'):
+            print("Downloading ROBERTA MNLI model from s3...")
+            wget.download(ROBERTA_STS_URL, ROBERTA_MNLI_PATH +
+                          '/model_mnli.pt', bar=self._download_prgoress_bar)
+
         self.roberta_STS = RobertaModel.from_pretrained(
             checkpoint_file='checkpoint_best.pt',
             model_name_or_path=ROBERTA_STS_PATH)
@@ -29,6 +59,11 @@ class Blanc:
         self.gpt_model = GPT2LMHeadModel.from_pretrained('gpt2')
         self.agg_one = load(AGGREGATOR_2015_2016)
         self.agg_two = load(AGGREGATOR_2015_2017)
+
+    @staticmethod
+    def _download_prgoress_bar(current, total, width=80):
+        print("Downloading: %d%% [%d / %d] bytes" % (
+            current / total * 100, current, total))
 
     def _roberta_similarity(self, ref, hyp):
         tokens = self.roberta_STS.encode(ref, hyp)
