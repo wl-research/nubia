@@ -132,4 +132,4 @@ dmypy.json
 
 
 # models
-blanc_nn/pretrained/*
+pretrained/*
