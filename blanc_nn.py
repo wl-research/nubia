@@ -43,7 +43,7 @@ class Blanc:
                           bar=self._download_prgoress_bar)
         if not os.path.isfile(ROBERTA_MNLI_PATH + 'model_mnli.pt'):
             print("Downloading ROBERTA MNLI model from s3...")
-            wget.download(ROBERTA_STS_URL, ROBERTA_MNLI_PATH +
+            wget.download(ROBERTA_MNLI_URL, ROBERTA_MNLI_PATH +
                           '/model_mnli.pt', bar=self._download_prgoress_bar)
 
         self.roberta_STS = RobertaModel.from_pretrained(
