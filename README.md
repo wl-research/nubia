@@ -2,7 +2,7 @@
 
 ## NUBIA (NeUral Based Interchangeability Assessor) is a new SoTA evaluation metric for text generation.
 
-Check out the [paper](https://arxiv.org/abs/2004.14667) on ArXiv, and this [blog post](https://wl-research.github.io/blog/2020/04/29/introducing-nubia.html).
+Check out the [paper](https://arxiv.org/abs/2004.14667), this [blog post](https://wl-research.github.io/blog/2020/04/29/introducing-nubia.html), and this [demo colab notebook](https://colab.research.google.com/drive/1_K8pOB8fRRnkBPwlcmvUNHgCr4ur8rFg).
 
 #### Installation:
 
