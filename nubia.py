@@ -189,9 +189,9 @@ class Nubia:
                   '/5.0')
             print("Percent chance of contradiction: " +
                   str(nubia["features"]["contradiction"]) + "%")
-            print("Percent chance of irrelevancy " +
+            print("Percent chance of irrelevancy or new information: " +
                   str(nubia["features"]["irrelevancy"]) + "%")
-            print("Percent chance of logical agreement " +
+            print("Percent chance of logical agreement: " +
                   str(nubia["features"]["logical_agreement"]) + "%")
             print("Grammaticality score for reference sentence: "
                   + str(nubia["features"]["grammar_ref"]))
