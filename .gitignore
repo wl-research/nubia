@@ -132,6 +132,8 @@ dmypy.json
 
 
 # models
+
 pretrained/aggregators/*
+
 pretrained/roBERTa_MNLI/model_mnli.pt
 pretrained/roBERTa_STS/checkpoint_best.pt
