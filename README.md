@@ -51,3 +51,7 @@ See more exmaples of usage at our [demo notebook](https://github.com/wl-research
 If you use Nubia in your work, please cite it as: 
 
 arXiv:2004.14667
+
+#### Contact Us: 
+
+You can reach us by email [here](mailto:hassanmohamed@alum.mit.edu) or by opening an issue. 
