@@ -4,7 +4,7 @@
 
 Check out the [paper](https://arxiv.org/abs/2004.14667), this [blog post](https://wl-research.github.io/blog/2020/04/29/introducing-nubia.html), and this [demo colab notebook](https://colab.research.google.com/drive/1_K8pOB8fRRnkBPwlcmvUNHgCr4ur8rFg).
 
-<center><img src="images/demo-dinner-3.gif" height="150px"></img></center>
+<center><img src="images/demo-short.gif"></img></center>
 
 #### Installation:
 
