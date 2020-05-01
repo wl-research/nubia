@@ -1,6 +1,6 @@
 # Welcome to the NUBIA repo! 
 
-## NUBIA (NeUral Based Interchangeability Assessor) is a SoTA text similarity metric.
+## NUBIA (NeUral Based Interchangeability Assessor) is a new SoTA evaluation metric for text generation.
 
 Check out the [paper](https://arxiv.org/abs/2004.14667) on ArXiv, and this [blog post](https://wl-research.github.io/blog/2020/04/29/introducing-nubia.html).
 
@@ -8,7 +8,7 @@ Check out the [paper](https://arxiv.org/abs/2004.14667) on ArXiv, and this [blog
 
 Clone the repo: `git clone https://github.com/wl-research/nubia.git`
 
-Installing requirements: `pip install -r requirements.txt`
+Install requirements: `pip install -r requirements.txt`
 
 #### Use:
 
@@ -34,9 +34,9 @@ Semantic relation: 1.4594818353652954/5.0
 
 Percent chance of contradiction: 99.90345239639282%
 
-Percent chance of irrelevancy 0.06429857457987964%
+Percent chance of irrelevancy or new information: 0.06429857457987964%
 
-Percent chance of logical agreement 0.03225349937565625%
+Percent chance of logical agreement: 0.03225349937565625%
 
 Grammaticality score for reference sentence: 5.1724853515625
 
@@ -48,7 +48,7 @@ See more exmaples of usage at our [demo notebook](https://github.com/wl-research
 
 #### Citation:
 
-If you use Nubia in your work, please cite it as: 
+If you use Nubia in your work, please cite: 
 
 ```
 @misc{kane2020nubia,
@@ -63,4 +63,4 @@ If you use Nubia in your work, please cite it as:
 
 #### Contact Us: 
 
-You can reach us by email [here](mailto:hassanmohamed@alum.mit.edu) or by opening an issue. 
+You can reach us by email [here](mailto:hassanmohamed@alum.mit.edu) or by opening an issue at this repo. 
