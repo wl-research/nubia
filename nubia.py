@@ -24,27 +24,27 @@ AGGREGATOR_2015_2016_URL = "https://blanc-nn.s3.amazonaws.com/" \
 AGGREGATOR_2015_2017_URL = "https://blanc-nn.s3.amazonaws.com/" \
                            "aggregators/nn_2015_2017_6_dim.joblib"
 
-class Blanc:
+class Nubia:
     def __init__(self):
         if not os.path.isfile(AGGREGATOR_2015_2016):
             print("Downloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2016_URL,
                                 AGGREGATOR_2015_2016,
-                                bar=self._download_prgoress_bar)
+                                bar=self._download_progress_bar)
         if not os.path.isfile(AGGREGATOR_2015_2017):
             print("Downloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2017_URL,
                                 AGGREGATOR_2015_2017,
-                                bar=self._download_prgoress_bar)
+                                bar=self._download_progress_bar)
         if not os.path.isfile(ROBERTA_STS_PATH + '/checkpoint_best.pt'):
             print("Downloading ROBERTA STS model from s3...")
             wget.download(ROBERTA_STS_URL, ROBERTA_STS_PATH +
                           '/checkpoint_best.pt',
-                          bar=self._download_prgoress_bar)
-        if not os.path.isfile(ROBERTA_MNLI_PATH + 'model_mnli.pt'):
+                          bar=self._download_progress_bar)
+        if not os.path.isfile(ROBERTA_MNLI_PATH + '/model_mnli.pt'):
             print("Downloading ROBERTA MNLI model from s3...")
             wget.download(ROBERTA_MNLI_URL, ROBERTA_MNLI_PATH +
-                          '/model_mnli.pt', bar=self._download_prgoress_bar)
+                          '/model_mnli.pt', bar=self._download_progress_bar)
 
         self.roberta_STS = RobertaModel.from_pretrained(
             checkpoint_file='checkpoint_best.pt',
@@ -61,7 +61,7 @@ class Blanc:
         self.agg_two = load(AGGREGATOR_2015_2017)
 
     @staticmethod
-    def _download_prgoress_bar(current, total, width=80):
+    def _download_progress_bar(current, total, width=80):
         print("Downloading: %d%% [%d / %d] bytes" % (
             current / total * 100, current, total))
 
@@ -96,9 +96,9 @@ class Blanc:
         neural_features = np.array([float(sim), float(mnli_zero),
                                     float(mnli_one), float(mnli_two),
                                     float(gpt_ref), float(gpt_hyp)])
-        blanc_score = self.agg_two.predict(neural_features.reshape(1, -1))
+        nubia_score = self.agg_two.predict(neural_features.reshape(1, -1))
         if get_features:
-            return {"blanc_score": blanc_score, "neural_features":
+            return {"nubia_score": nubia_score, "neural_features":
                     neural_features}
-        return blanc_score[0]
+        return nubia_score[0]
 
