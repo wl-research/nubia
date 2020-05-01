@@ -14,6 +14,12 @@ AGGREGATOR_2015_2016 = \
 AGGREGATOR_2015_2017 = \
     'pretrained/aggregators/nn_2015_2017_6_dim' \
     '.joblib'
+AGGREGATOR_2015_2016_8_dim = \
+    'pretrained/aggregators/nn_2015_2016_8_dim' \
+    '.joblib'
+AGGREGATOR_2015_2017_8_dim = \
+    'pretrained/aggregators/nn_2015_2017_8_dim' \
+    '.joblib'
 
 ROBERTA_STS_URL = "https://nubia-nn.s3.amazonaws.com/" \
                   "neural-feature-extractors/checkpoint_best.pt"
@@ -23,6 +29,12 @@ AGGREGATOR_2015_2016_URL = "https://nubia-nn.s3.amazonaws.com/" \
                            "aggregators/nn_2015_2016_6_dim.joblib"
 AGGREGATOR_2015_2017_URL = "https://nubia-nn.s3.amazonaws.com/" \
                            "aggregators/nn_2015_2017_6_dim.joblib"
+AGGREGATOR_2015_2016_8_dim_URL = "https://nubia-nn.s3.amazonaws.com/" \
+                           "aggregators/nn_2015_2016_8_dim.joblib"
+
+AGGREGATOR_2015_2017_8_dim_URL = "https://nubia-nn.s3.amazonaws.com/" \
+                           "aggregators/nn_2015_2017_8_dim.joblib"
+
 
 class Nubia:
     def __init__(self):
@@ -35,6 +47,16 @@ class Nubia:
             print("Downloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2017_URL,
                                 AGGREGATOR_2015_2017,
+                                bar=self._download_progress_bar)
+        if not os.path.isfile(AGGREGATOR_2015_2016_8_dim):
+            print("Downloading aggregators from s3...")
+            wget.download(AGGREGATOR_2015_2016_8_dim_URL,
+                                AGGREGATOR_2015_2016_8_dim,
+                                bar=self._download_progress_bar)
+        if not os.path.isfile(AGGREGATOR_2015_2017_8_dim):
+            print("Downloading aggregators from s3...")
+            wget.download(AGGREGATOR_2015_2017_8_dim_URL,
+                                AGGREGATOR_2015_2017_8_dim,
                                 bar=self._download_progress_bar)
         if not os.path.isfile(ROBERTA_STS_PATH + '/checkpoint_best.pt'):
             print("Downloading ROBERTA STS model from s3...")
@@ -59,6 +81,8 @@ class Nubia:
         self.gpt_model = GPT2LMHeadModel.from_pretrained('gpt2')
         self.agg_one = load(AGGREGATOR_2015_2016)
         self.agg_two = load(AGGREGATOR_2015_2017)
+        self.agg_one_8_dim = load(AGGREGATOR_2015_2016_8_dim)
+        self.agg_two_8_dim = load(AGGREGATOR_2015_2017_8_dim)
 
     @staticmethod
     def _download_progress_bar(current, total, width=80):
@@ -88,17 +112,92 @@ class Nubia:
             loss, logits = outputs[:2]
         return loss
 
-    def score(self, ref, hyp, get_features=False):
+    def nubia(self, ref, hyp, get_features=False, six_dim=False,
+              aggregator="agg_one"):
         sim = float(self._roberta_similarity(ref, hyp)[0])
         mnli_zero, mnli_one, mnli_two = self._roberta_mnli_all_values(ref, hyp)
         gpt_ref = self._gpt_score(ref)
         gpt_hyp = self._gpt_score(hyp)
-        neural_features = np.array([float(sim), float(mnli_zero),
-                                    float(mnli_one), float(mnli_two),
-                                    float(gpt_ref), float(gpt_hyp)])
-        nubia_score = self.agg_two.predict(neural_features.reshape(1, -1))
+        len_ref = len(ref.split(" "))
+        len_hyp = len(hyp.split(" "))
+
+        mnli_friendly = torch.nn.functional.softmax(
+            torch.tensor([mnli_zero, mnli_one, mnli_two]), dim=0).tolist()
+
+        neural_features_6_dim = np.array(
+            [float(sim), float(mnli_zero), float(mnli_one), float(mnli_two),
+             float(gpt_ref), float(gpt_hyp)])  # 6 Neural Features
+
+        neural_features_8_dim = np.array(
+            [float(sim), float(mnli_zero), float(mnli_one), float(mnli_two),
+             float(gpt_ref), float(gpt_hyp), float(len_ref),
+             float(len_hyp)])  # 8 Neural Features
+
+        if aggregator == "agg_one":
+            if six_dim:
+                nubia_score = float(self.agg_one.predict(
+                    neural_features_6_dim.reshape(1, -1))[0])
+            else:
+                nubia_score = float(self.agg_one_8_dim.predict(
+                    neural_features_8_dim.reshape(1, -1))[0])
+        else:
+            if six_dim:
+                nubia_score = float(self.agg_two.predict(
+                    neural_features_6_dim.reshape(1, -1))[0])
+            else:
+                nubia_score = float(self.agg_two_8_dim.predict(
+                    neural_features_8_dim.reshape(1, -1))[0])
+
         if get_features:
-            return {"nubia_score": nubia_score, "neural_features":
-                    neural_features}
-        return nubia_score[0]
+            return {"nubia_score": nubia_score, "features": {
+                "sim": sim,
+                "gpt_ref": gpt_ref,
+                "gpt_hyp": gpt_hyp,
+                "mnli_friendly": mnli_friendly,
+            }
+                    }
+        return nubia_score
+
+    def score(self, ref, hyp, verbose=False, get_features=False,
+              six_dim=False, aggregator="agg_one"):
+
+        nubia = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
+                           aggregator=aggregator)
+
+        self_similarity = self.nubia(ref, ref,
+                                     get_features=False, six_dim=six_dim,
+                                     aggregator=aggregator)
+
+        amplitude = abs(self_similarity) + 1
+        difference = self_similarity - nubia["nubia_score"]
+
+        calibrated = 1.0 - (float(difference)/float(amplitude))
+
+        if calibrated > 0:
+            calibrated = min(1.0, calibrated)
+        else:
+            calibrated = max(0.0, calibrated)
+
+        if verbose:
+            print("Semantic relation: " +
+                  str(min(5.0, nubia["features"]["sim"])) + '/5.0\n')
+            print("Percent chance of contradiction: " +
+                  str(nubia["features"]["mnli_friendly"][0]*100) + "%\n")
+            print("Percent chance of irrelevancy " +
+                  str(nubia["features"]["mnli_friendly"][1]*100) + "%\n")
+            print("Percent chance of logical agreement " +
+                  str(nubia["features"]["mnli_friendly"][2]*100) + "%\n")
+            print("Grammaticality score for reference sentence: "
+                  + str(nubia["features"]["gpt_ref"].item()) + '\n')
+            print("Grammaticality score for candidate sentence:  "
+                  + str(nubia["features"]["gpt_hyp"].item()) + '\n\n')
+            print("NUBIA score: " + str(calibrated) + "/1.0")
+
+        nubia["nubia_score"] = calibrated
+
+        if get_features:
+            return nubia
+
+        return calibrated
+
 
