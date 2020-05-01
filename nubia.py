@@ -8,6 +8,7 @@ from joblib import load
 
 ROBERTA_STS_PATH = 'pretrained/roBERTa_STS'
 ROBERTA_MNLI_PATH = 'pretrained/roBERTa_MNLI'
+AGGREGATOR_DIR = 'pretrained/aggregators/'
 AGGREGATOR_2015_2016 = \
     'pretrained/aggregators/nn_2015_2016_6_dim' \
     '.joblib'
@@ -38,6 +39,8 @@ AGGREGATOR_2015_2017_8_dim_URL = "https://nubia-nn.s3.amazonaws.com/" \
 
 class Nubia:
     def __init__(self):
+        if not os.path.exists(AGGREGATOR_DIR):
+            os.makedirs(AGGREGATOR_DIR)
         if not os.path.isfile(AGGREGATOR_2015_2016):
             print("Downloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2016_URL,
