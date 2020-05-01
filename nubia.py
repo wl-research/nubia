@@ -186,17 +186,17 @@ class Nubia:
         if verbose:
             print("Semantic relation: " +
                   str(min(5.0, nubia["features"]["semantic_relation"])) +
-                  '/5.0\n')
+                  '/5.0')
             print("Percent chance of contradiction: " +
-                  str(nubia["features"]["contradiction"]) + "%\n")
+                  str(nubia["features"]["contradiction"]) + "%")
             print("Percent chance of irrelevancy " +
-                  str(nubia["features"]["irrelevancy"]) + "%\n")
+                  str(nubia["features"]["irrelevancy"]) + "%")
             print("Percent chance of logical agreement " +
-                  str(nubia["features"]["logical_agreement"]) + "%\n")
+                  str(nubia["features"]["logical_agreement"]) + "%")
             print("Grammaticality score for reference sentence: "
-                  + str(nubia["features"]["grammar_ref"]) + '\n')
+                  + str(nubia["features"]["grammar_ref"]))
             print("Grammaticality score for candidate sentence:  "
-                  + str(nubia["features"]["grammar_hyp"]) + '\n\n')
+                  + str(nubia["features"]["grammar_hyp"]) + '\n')
             print("NUBIA score: " + str(calibrated) + "/1.0")
 
         nubia["nubia_score"] = calibrated
