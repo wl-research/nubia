@@ -1,12 +1,12 @@
 # Welcome to the NUBIA repo! 
 
-## NUBIA (NeUral Based Interchangeability Assessor) is a SoTA text similarity metric.
+## NUBIA (NeUral Based Interchangeability Assessor) is a SoTA (as of May 2020) metric to assess the quality of candidate machine translation, image captions and summaries against reference text
 
 Check out the [paper](https://arxiv.org/abs/2004.14667) on ArXiv, and this [blog post](https://wl-research.github.io/blog/2020/04/29/introducing-nubia.html).
 
 #### Installation:
 
-Clone the repo: `git clone https://github.com/wl-research/nubia.git`
+Clone the repo: `git clone git@github.com:wl-research/nubia.git`
 
 Installing requirements: `pip install -r requirements.txt`
 
