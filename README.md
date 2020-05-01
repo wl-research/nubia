@@ -1,6 +1,6 @@
 # Welcome to the NUBIA repo! 
 
-## NUBIA (NeUral Based Interchangeability Assessor) is a new SoTA evaluation metric for text generation.
+## NUBIA (NeUral Based Interchangeability Assessor) is a new SoTA evaluation metric for text generation
 
 Check out the [paper](https://arxiv.org/abs/2004.14667), this [blog post](https://wl-research.github.io/blog/2020/04/29/introducing-nubia.html), and this [demo colab notebook](https://colab.research.google.com/drive/1_K8pOB8fRRnkBPwlcmvUNHgCr4ur8rFg).
 
@@ -29,21 +29,15 @@ Setting `get_features` to `True` will return a dictionary with additional featur
 #### Example:
 
 `nubia.score("The dinner was delicious.", "The dinner did not taste good.", verbose=True, get_features=True)`
-
+```
 Semantic relation: 1.4594818353652954/5.0
-
 Percent chance of contradiction: 99.90345239639282%
-
 Percent chance of irrelevancy or new information: 0.06429857457987964%
-
 Percent chance of logical agreement: 0.03225349937565625%
 
-Grammaticality score for reference sentence: 5.1724853515625
-
-Grammaticality score for candidate sentence:  4.905452728271484
 
 NUBIA score: 0.18573102718477918/1.0
-
+```
 See more exmaples of usage at our [demo notebook](https://github.com/wl-research/nubia/blob/master/nubia-demo.ipynb) `nubia-demo.pynb`
 
 #### Citation:
