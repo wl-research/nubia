@@ -50,15 +50,18 @@ See more exmaples of usage at our [demo notebook](https://github.com/wl-research
 
 If you use Nubia in your work, please cite it as: 
 
-`
+```
 @misc{kane2020nubia,
+
     title={NUBIA: NeUral Based Interchangeability Assessor for Text Generation},
+    
     author={Hassan Kane and Muhammed Yusuf Kocyigit and Ali Abdalla and Pelkins Ajanoh and Mohamed Coulibali},
     year={2020},
     eprint={2004.14667},
     archivePrefix={arXiv},
     primaryClass={cs.CL}
-}`
+}
+```
 
 #### Contact Us: 
 
