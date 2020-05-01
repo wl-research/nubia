@@ -150,12 +150,14 @@ class Nubia:
 
         if get_features:
             return {"nubia_score": nubia_score, "features": {
-                "sim": sim,
-                "gpt_ref": gpt_ref,
-                "gpt_hyp": gpt_hyp,
-                "mnli_friendly": mnli_friendly,
+                "semantic_relation": min(5.0, sim),
+                "contradiction": mnli_friendly[0]*100,
+                "irrelevancy": mnli_friendly[1]*100,
+                "logical_agreement": mnli_friendly[2]*100,
+                "grammar_ref": gpt_ref.item(),
+                "grammar_hyp": gpt_hyp.item(),
             }
-                    }
+             }
         return nubia_score
 
     def score(self, ref, hyp, verbose=False, get_features=False,
@@ -171,7 +173,7 @@ class Nubia:
         amplitude = abs(self_similarity) + 1
         difference = self_similarity - nubia["nubia_score"]
 
-        calibrated = 1.0 - (float(difference)/float(amplitude))
+        calibrated = 1.0 - (float(difference) / float(amplitude))
 
         if calibrated > 0:
             calibrated = min(1.0, calibrated)
@@ -180,17 +182,18 @@ class Nubia:
 
         if verbose:
             print("Semantic relation: " +
-                  str(min(5.0, nubia["features"]["sim"])) + '/5.0\n')
+                  str(min(5.0, nubia["features"]["semantic_relation"])) +
+                  '/5.0\n')
             print("Percent chance of contradiction: " +
-                  str(nubia["features"]["mnli_friendly"][0]*100) + "%\n")
+                  str(nubia["features"]["contradiction"]) + "%\n")
             print("Percent chance of irrelevancy " +
-                  str(nubia["features"]["mnli_friendly"][1]*100) + "%\n")
+                  str(nubia["features"]["irrelevancy"]) + "%\n")
             print("Percent chance of logical agreement " +
-                  str(nubia["features"]["mnli_friendly"][2]*100) + "%\n")
+                  str(nubia["features"]["logical_agreement"]) + "%\n")
             print("Grammaticality score for reference sentence: "
-                  + str(nubia["features"]["gpt_ref"].item()) + '\n')
+                  + str(nubia["features"]["grammar_ref"]) + '\n')
             print("Grammaticality score for candidate sentence:  "
-                  + str(nubia["features"]["gpt_hyp"].item()) + '\n\n')
+                  + str(nubia["features"]["grammar_hyp"]) + '\n\n')
             print("NUBIA score: " + str(calibrated) + "/1.0")
 
         nubia["nubia_score"] = calibrated
