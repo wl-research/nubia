@@ -157,8 +157,6 @@ class Nubia:
                 "contradiction": mnli_friendly[0]*100,
                 "irrelevancy": mnli_friendly[1]*100,
                 "logical_agreement": mnli_friendly[2]*100,
-                "grammar_ref": gpt_ref.item(),
-                "grammar_hyp": gpt_hyp.item(),
             }
              }
         return nubia_score
@@ -193,10 +191,6 @@ class Nubia:
                   str(nubia["features"]["irrelevancy"]) + "%")
             print("Percent chance of logical agreement: " +
                   str(nubia["features"]["logical_agreement"]) + "%")
-            print("Grammaticality score for reference sentence: "
-                  + str(nubia["features"]["grammar_ref"]))
-            print("Grammaticality score for candidate sentence:  "
-                  + str(nubia["features"]["grammar_hyp"]) + '\n')
             print("NUBIA score: " + str(calibrated) + "/1.0")
 
         nubia["nubia_score"] = calibrated
