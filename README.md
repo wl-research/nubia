@@ -16,7 +16,7 @@ Import and initialize the `Nubia` class from `nubia.py` (wherever you cloned the
 
 Note: The first time you initialize the class it will download the pretrained models from the S3 bucket, this could take a while depending on your internet connection.
 
-`Nubia().score` takes seven parameters: `(ref, hyp, verbose=False, get_features=False, six_dim=False, aggregator="agg_one")`
+`Nubia().score` takes seven parameters: `(ref, hyp, verbose=False, get_features=False, six_dim=False, aggregator="agg_two")`
 
 `ref` and `hyp` are the strings nubia will compare. 
 
@@ -24,7 +24,7 @@ Setting `get_features` to `True` will return a dictionary with additional featur
 
 `six_dim = True` will not take the word count of `hyp` and `ref` into account when computing the score.
 
-`aggregator` is set to `agg_one` by default, but you may choose to try `agg_two` which is
+`aggregator` is set to `agg_two` by default, but you may choose to try `agg_one` which was used to achieve the WMT 2017 results.
 
 #### Example:
 
