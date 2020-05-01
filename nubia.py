@@ -116,7 +116,7 @@ class Nubia:
         return loss
 
     def nubia(self, ref, hyp, get_features=False, six_dim=False,
-              aggregator="agg_one"):
+              aggregator="agg_two"):
         sim = float(self._roberta_similarity(ref, hyp)[0])
         mnli_zero, mnli_one, mnli_two = self._roberta_mnli_all_values(ref, hyp)
         gpt_ref = self._gpt_score(ref)
@@ -164,7 +164,7 @@ class Nubia:
         return nubia_score
 
     def score(self, ref, hyp, verbose=False, get_features=False,
-              six_dim=False, aggregator="agg_one"):
+              six_dim=False, aggregator="agg_two"):
 
         nubia = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
                            aggregator=aggregator)
