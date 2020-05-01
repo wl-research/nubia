@@ -15,13 +15,13 @@ AGGREGATOR_2015_2017 = \
     'pretrained/aggregators/nn_2015_2017_6_dim' \
     '.joblib'
 
-ROBERTA_STS_URL = "https://blanc-nn.s3.amazonaws.com/" \
+ROBERTA_STS_URL = "https://nubia-nn.s3.amazonaws.com/" \
                   "neural-feature-extractors/checkpoint_best.pt"
-ROBERTA_MNLI_URL = "https://blanc-nn.s3.amazonaws.com/" \
+ROBERTA_MNLI_URL = "https://nubia-nn.s3.amazonaws.com/" \
                    "neural-feature-extractors/model_mnli.pt"
-AGGREGATOR_2015_2016_URL = "https://blanc-nn.s3.amazonaws.com/" \
+AGGREGATOR_2015_2016_URL = "https://nubia-nn.s3.amazonaws.com/" \
                            "aggregators/nn_2015_2016_6_dim.joblib"
-AGGREGATOR_2015_2017_URL = "https://blanc-nn.s3.amazonaws.com/" \
+AGGREGATOR_2015_2017_URL = "https://nubia-nn.s3.amazonaws.com/" \
                            "aggregators/nn_2015_2017_6_dim.joblib"
 
 class Nubia:
