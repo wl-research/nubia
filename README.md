@@ -6,7 +6,7 @@ Check out the [paper](https://arxiv.org/abs/2004.14667) on ArXiv, and this [blog
 
 #### Installation:
 
-Clone the repo: `git clone git@github.com:wl-research/nubia.git`
+Clone the repo: `git clone https://github.com/wl-research/nubia.git`
 
 Installing requirements: `pip install -r requirements.txt`
 
