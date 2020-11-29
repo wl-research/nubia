@@ -21,4 +21,4 @@ examples = [
 iface = gradio.Interface(fn=predict, inputs=inputs, outputs=outputs, capture_session=True, examples=examples,
                          title=title, description=description, allow_flagging=False)
 
-iface.launch(inbrowser=True)
+iface.launch()
