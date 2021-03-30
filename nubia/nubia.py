@@ -5,23 +5,23 @@ import wget
 import numpy as np
 from fairseq.models.roberta import RobertaModel
 from joblib import load
-from time import time
 
+pretrained = os.path.join(os.path.dirname(__file__), "pretrained")
 
-ROBERTA_STS_PATH = 'pretrained/roBERTa_STS'
-ROBERTA_MNLI_PATH = 'pretrained/roBERTa_MNLI'
-AGGREGATOR_DIR = 'pretrained/aggregators/'
+ROBERTA_STS_PATH = pretrained + '/roBERTa_STS'
+ROBERTA_MNLI_PATH = pretrained + '/roBERTa_MNLI'
+AGGREGATOR_DIR = pretrained + '/aggregators/'
 AGGREGATOR_2015_2016 = \
-    'pretrained/aggregators/nn_2015_2016_6_dim' \
+    pretrained + '/aggregators/nn_2015_2016_6_dim' \
     '.joblib'
 AGGREGATOR_2015_2017 = \
-    'pretrained/aggregators/nn_2015_2017_6_dim' \
+    pretrained + '/aggregators/nn_2015_2017_6_dim' \
     '.joblib'
 AGGREGATOR_2015_2016_8_dim = \
-    'pretrained/aggregators/nn_2015_2016_8_dim' \
+    pretrained + '/aggregators/nn_2015_2016_8_dim' \
     '.joblib'
 AGGREGATOR_2015_2017_8_dim = \
-    'pretrained/aggregators/nn_2015_2017_8_dim' \
+    pretrained + '/aggregators/nn_2015_2017_8_dim' \
     '.joblib'
 
 ROBERTA_STS_URL = "https://nubia-nn.s3.amazonaws.com/" \
@@ -170,8 +170,6 @@ class Nubia:
     def score(self, ref, hyp, verbose=False, get_features=False,
               six_dim=False, aggregator="agg_two"):
 
-        start = time()
-
         nubia, gpt_ref = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
                            aggregator=aggregator)
 
@@ -203,7 +201,6 @@ class Nubia:
 
         nubia["nubia_score"] = calibrated
 
-        print(time() - start)
         if get_features:
             return nubia
 
