@@ -142,21 +142,21 @@ class Nubia:
 
         if aggregator == "agg_one":
             if six_dim:
-                nubia_score = float(self.agg_one.predict(
+                nubia_metric = float(self.agg_one.predict(
                     neural_features_6_dim.reshape(1, -1))[0])
             else:
-                nubia_score = float(self.agg_one_8_dim.predict(
+                nubia_metric = float(self.agg_one_8_dim.predict(
                     neural_features_8_dim.reshape(1, -1))[0])
         else:
             if six_dim:
-                nubia_score = float(self.agg_two.predict(
+                nubia_metric = float(self.agg_two.predict(
                     neural_features_6_dim.reshape(1, -1))[0])
             else:
-                nubia_score = float(self.agg_two_8_dim.predict(
+                nubia_metric = float(self.agg_two_8_dim.predict(
                     neural_features_8_dim.reshape(1, -1))[0])
 
         if get_features:
-            return {"nubia_score": nubia_score, "features": {
+            return {"nubia_score": nubia_metric, "features": {
                 "semantic_relation": min(5.0, sim),
                 "contradiction": mnli_friendly[0]*100,
                 "irrelevancy": mnli_friendly[1]*100,
@@ -165,7 +165,7 @@ class Nubia:
                 "grammar_hyp": gpt_hyp.item(),
             }
              }, gpt_ref
-        return nubia_score, gpt_ref
+        return nubia_metric, gpt_ref
 
     def score(self, ref, hyp, verbose=False, get_features=False,
               six_dim=False, aggregator="agg_two"):

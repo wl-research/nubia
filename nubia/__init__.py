@@ -1,3 +1,0 @@
-from nubia.nubia import *
-
-

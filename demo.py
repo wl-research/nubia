@@ -1,4 +1,4 @@
-from nubia import Nubia
+from nubia_score import Nubia
 import gradio
 
 nubia = Nubia()
