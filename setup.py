@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='nubia_score',
-    version='0.1.2',
+    version='0.1.3',
     description='NUBIA (NeUral Based Interchangeability Assessor) is a SoTA evaluation metric for text generation',
     url='https://github.com/wl-research/nubia',
     author='Ali Abdalla',
@@ -19,6 +19,5 @@ setup(
         'joblib',
         'scikit-learn>=0.22.2',
         'wget',
-        'gradio'
     ],
 )
