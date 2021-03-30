@@ -5,6 +5,8 @@ import wget
 import numpy as np
 from fairseq.models.roberta import RobertaModel
 from joblib import load
+from time import time
+
 
 ROBERTA_STS_PATH = 'pretrained/roBERTa_STS'
 ROBERTA_MNLI_PATH = 'pretrained/roBERTa_MNLI'
@@ -44,33 +46,28 @@ class Nubia:
         if not os.path.isfile(AGGREGATOR_2015_2016):
             print("Downloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2016_URL,
-                                AGGREGATOR_2015_2016,
-                                bar=self._download_progress_bar)
+                                AGGREGATOR_2015_2016)
         if not os.path.isfile(AGGREGATOR_2015_2017):
-            print("Downloading aggregators from s3...")
+            print("\nDownloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2017_URL,
-                                AGGREGATOR_2015_2017,
-                                bar=self._download_progress_bar)
+                                AGGREGATOR_2015_2017)
         if not os.path.isfile(AGGREGATOR_2015_2016_8_dim):
-            print("Downloading aggregators from s3...")
+            print("\nDownloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2016_8_dim_URL,
-                                AGGREGATOR_2015_2016_8_dim,
-                                bar=self._download_progress_bar)
+                                AGGREGATOR_2015_2016_8_dim)
         if not os.path.isfile(AGGREGATOR_2015_2017_8_dim):
-            print("Downloading aggregators from s3...")
+            print("\nDownloading aggregators from s3...")
             wget.download(AGGREGATOR_2015_2017_8_dim_URL,
-                                AGGREGATOR_2015_2017_8_dim,
-                                bar=self._download_progress_bar)
+                                AGGREGATOR_2015_2017_8_dim)
         if not os.path.isfile(ROBERTA_STS_PATH + '/checkpoint_best.pt'):
-            print("Downloading ROBERTA STS model from s3...")
+            print("\nDownloading ROBERTA STS model from s3...")
             wget.download(ROBERTA_STS_URL, ROBERTA_STS_PATH +
-                          '/checkpoint_best.pt',
-                          bar=self._download_progress_bar)
+                          '/checkpoint_best.pt')
         if not os.path.isfile(ROBERTA_MNLI_PATH + '/model_mnli.pt'):
-            print("Downloading ROBERTA MNLI model from s3...")
+            print("\nDownloading ROBERTA MNLI model from s3...")
             wget.download(ROBERTA_MNLI_URL, ROBERTA_MNLI_PATH +
-                          '/model_mnli.pt', bar=self._download_progress_bar)
-
+                          '/model_mnli.pt')
+        print('\n')
         self.roberta_STS = RobertaModel.from_pretrained(
             checkpoint_file='checkpoint_best.pt',
             model_name_or_path=ROBERTA_STS_PATH)
@@ -92,15 +89,17 @@ class Nubia:
         print("Downloading: %d%% [%d / %d] bytes" % (
             current / total * 100, current, total))
 
-    def _roberta_similarity(self, ref, hyp):
+    def _roberta_tokenizer(self, ref, hyp):
         tokens = self.roberta_STS.encode(ref, hyp)
+        return tokens
+
+    def _roberta_similarity(self, tokens):
         features = self.roberta_STS.extract_features(tokens)
         predicted_semantic_distance = 5.0 * \
             self.roberta_STS.model.classification_heads['sentence_classification_head'](features)
         return predicted_semantic_distance
 
-    def _roberta_mnli_all_values(self, ref, hyp):
-        tokens = self.roberta_MNLI.encode(ref, hyp)
+    def _roberta_mnli_all_values(self, tokens):
         prediction = self.roberta_MNLI.predict('mnli', tokens)[0].\
             cpu().detach().numpy()
         return prediction
@@ -116,11 +115,16 @@ class Nubia:
         return loss
 
     def nubia(self, ref, hyp, get_features=False, six_dim=False,
-              aggregator="agg_two"):
-        sim = float(self._roberta_similarity(ref, hyp)[0])
-        mnli_zero, mnli_one, mnli_two = self._roberta_mnli_all_values(ref, hyp)
-        gpt_ref = self._gpt_score(ref)
-        gpt_hyp = self._gpt_score(hyp)
+              aggregator="agg_two", gpt_ref=None):
+        tokens = self._roberta_tokenizer(ref, hyp)
+        sim = float(self._roberta_similarity(tokens)[0])
+
+        mnli_zero, mnli_one, mnli_two = self._roberta_mnli_all_values(tokens)
+        if not gpt_ref:
+            gpt_ref = self._gpt_score(ref)
+            gpt_hyp = self._gpt_score(hyp)
+        else:
+            gpt_hyp = gpt_ref
         len_ref = len(ref.split(" "))
         len_hyp = len(hyp.split(" "))
 
@@ -160,18 +164,20 @@ class Nubia:
                 "grammar_ref": gpt_ref.item(),
                 "grammar_hyp": gpt_hyp.item(),
             }
-             }
-        return nubia_score
+             }, gpt_ref
+        return nubia_score, gpt_ref
 
     def score(self, ref, hyp, verbose=False, get_features=False,
               six_dim=False, aggregator="agg_two"):
 
-        nubia = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
+        start = time()
+
+        nubia, gpt_ref = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
                            aggregator=aggregator)
 
-        self_similarity = self.nubia(ref, ref,
+        self_similarity, _ = self.nubia(ref, ref,
                                      get_features=False, six_dim=six_dim,
-                                     aggregator=aggregator)
+                                     aggregator=aggregator, gpt_ref=gpt_ref)
 
         amplitude = abs(self_similarity) + 1
         difference = self_similarity - nubia["nubia_score"]
@@ -197,9 +203,8 @@ class Nubia:
 
         nubia["nubia_score"] = calibrated
 
+        print(time() - start)
         if get_features:
             return nubia
 
         return calibrated
-
-
