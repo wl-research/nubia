@@ -170,6 +170,19 @@ class Nubia:
     def score(self, ref, hyp, verbose=False, get_features=False,
               six_dim=False, aggregator="agg_two"):
 
+        if not ref or not hyp:
+            if get_features:
+                return {"nubia_score": 0, "features": {
+                    "semantic_relation": 0,
+                    "contradiction": 0,
+                    "irrelevancy": 0,
+                    "logical_agreement": 0,
+                    "grammar_ref": 0,
+                    "grammar_hyp": 0,
+                }
+                        }
+            return 0
+
         nubia, gpt_ref = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
                            aggregator=aggregator)
 
