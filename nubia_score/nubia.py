@@ -94,12 +94,16 @@ class Nubia:
         return tokens
 
     def _roberta_similarity(self, tokens):
+        if len(tokens) > 512:
+          tokens = tokens[:512]
         features = self.roberta_STS.extract_features(tokens)
         predicted_semantic_distance = 5.0 * \
             self.roberta_STS.model.classification_heads['sentence_classification_head'](features)
         return predicted_semantic_distance
 
     def _roberta_mnli_all_values(self, tokens):
+        if len(tokens) > 512:
+          tokens = tokens[:512]
         prediction = self.roberta_MNLI.predict('mnli', tokens)[0].\
             cpu().detach().numpy()
         return prediction
