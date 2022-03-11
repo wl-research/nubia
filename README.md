@@ -6,11 +6,15 @@ Check out [the peer-reviewed paper](https://aclanthology.org/2020.evalnlgeval-1.
 
 <img src="https://i.ibb.co/H4v85pB/nubia-demo.gif" />
 
-#### Installation:
+#### Installation by using the pip package:
 
-Clone the repo: `git clone https://github.com/wl-research/nubia.git`
+You can directly install nubia using the pip package: `pip install nubia-score`
 
-Install requirements: `pip install -r requirements.txt`
+#### Installation by cloning the repo:
+
+You can also clone the repo: `git clone https://github.com/wl-research/nubia.git`
+
+And install requirements: `pip install -r requirements.txt`
 
 #### Use:
 
