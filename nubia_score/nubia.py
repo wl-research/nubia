@@ -6,6 +6,9 @@ import numpy as np
 from fairseq.models.roberta import RobertaModel
 from joblib import load
 
+device = torch.device("cuda")
+
+
 pretrained = os.path.join(os.path.dirname(__file__), "pretrained")
 
 ROBERTA_STS_PATH = pretrained + '/roBERTa_STS'
@@ -85,7 +88,7 @@ class Nubia:
         self.agg_two = load(AGGREGATOR_2015_2017)
         self.agg_one_8_dim = load(AGGREGATOR_2015_2016_8_dim)
         self.agg_two_8_dim = load(AGGREGATOR_2015_2017_8_dim)
-        
+
         self.gpt_model.to("cuda")
         self.agg_one.to("cuda")
         self.agg_two.to("cuda")
