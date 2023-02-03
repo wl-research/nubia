@@ -108,8 +108,7 @@ class Nubia:
     def _roberta_mnli_all_values(self, tokens):
         if len(tokens) > 512:
           tokens = tokens[:512]
-        prediction = self.roberta_MNLI.predict('mnli', tokens)[0].\
-            cpu().detach().numpy()
+        prediction = self.roberta_MNLI.predict('mnli', tokens)[0].detach().numpy()
         return prediction
 
     def _gpt_score(self, text):
