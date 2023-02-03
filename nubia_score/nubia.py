@@ -87,6 +87,10 @@ class Nubia:
         self.roberta_STS.to("cuda")
         self.roberta_MNLI.to("cuda")
         self.gpt_model.to("cuda")
+        self.agg_one.to("cuda")
+        self.agg_two.to("cuda")
+        self.agg_one_8_dim.to("cuda")
+        self.agg_two_8_dim.to("cuda")
 
     @staticmethod
     def _download_progress_bar(current, total, width=80):
@@ -152,17 +156,17 @@ class Nubia:
         if aggregator == "agg_one":
             if six_dim:
                 nubia_metric = float(self.agg_one.predict(
-                    neural_features_6_dim.reshape(1, -1))[0])
+                    neural_features_6_dim.reshape(1, -1))[0].to("cuda"))
             else:
                 nubia_metric = float(self.agg_one_8_dim.predict(
-                    neural_features_8_dim.reshape(1, -1))[0])
+                    neural_features_8_dim.reshape(1, -1))[0].to("cuda"))
         else:
             if six_dim:
                 nubia_metric = float(self.agg_two.predict(
-                    neural_features_6_dim.reshape(1, -1))[0])
+                    neural_features_6_dim.reshape(1, -1))[0].to("cuda"))
             else:
                 nubia_metric = float(self.agg_two_8_dim.predict(
-                    neural_features_8_dim.reshape(1, -1))[0])
+                    neural_features_8_dim.reshape(1, -1))[0].to("cuda"))
 
         if get_features:
             return {"nubia_score": nubia_metric, "features": {
