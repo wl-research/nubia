@@ -98,6 +98,7 @@ class Nubia:
         return tokens
 
     def _roberta_similarity(self, tokens):
+        tokens = tokens.cuda()
         if len(tokens) > 512:
           tokens = tokens[:512]
         features = self.roberta_STS.extract_features(tokens)
@@ -106,6 +107,7 @@ class Nubia:
         return predicted_semantic_distance
 
     def _roberta_mnli_all_values(self, tokens):
+        tokens = tokens.cuda()
         if len(tokens) > 512:
           tokens = tokens[:512]
         prediction = self.roberta_MNLI.predict('mnli', tokens)[0].detach().numpy()
@@ -117,7 +119,7 @@ class Nubia:
                                      self.tokenizer.convert_tokens_to_ids(
                                          tokenize_input)])
         with torch.no_grad():
-            outputs = self.gpt_model(tensor_input, labels=tensor_input)
+            outputs = self.gpt_model(tensor_input.cuda(), labels=tensor_input)
             loss, logits = outputs[:2]
         return loss
 
@@ -189,6 +191,8 @@ class Nubia:
                 }
                         }
             return 0
+
+        ref
 
         nubia, gpt_ref = self.nubia(ref, hyp, get_features=True, six_dim=six_dim,
                            aggregator=aggregator)
