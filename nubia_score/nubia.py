@@ -6,6 +6,11 @@ import numpy as np
 from fairseq.models.roberta import RobertaModel
 from joblib import load
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] ='0'
+
+
+
 device = torch.device("cuda")
 
 
@@ -95,6 +100,15 @@ class Nubia:
         self.agg_one_8_dim.to("cuda")
         self.agg_two_8_dim.to("cuda")
 
+        print(self.roberta_STS.is_cuda)
+        print(self.roberta_MNLI.is_cuda)
+        print(self.gpt_model.is_cuda)
+        print(self.agg_one.is_cuda)
+        print(self.agg_two.is_cuda)
+        print(self.agg_one_8_dim.is_cuda)
+        print(self.agg_two_8_dim.is_cuda)
+
+
     @staticmethod
     def _download_progress_bar(current, total, width=80):
         print("Downloading: %d%% [%d / %d] bytes" % (
@@ -106,6 +120,7 @@ class Nubia:
 
     def _roberta_similarity(self, tokens):
         tokens = tokens.cuda()
+        print(tokens.is_cuda)
         if len(tokens) > 512:
           tokens = tokens[:512]
         features = self.roberta_STS.extract_features(tokens)
@@ -115,6 +130,7 @@ class Nubia:
 
     def _roberta_mnli_all_values(self, tokens):
         tokens = tokens.cuda()
+        print(tokens.is_cuda)
         if len(tokens) > 512:
           tokens = tokens[:512]
         prediction = self.roberta_MNLI.predict('mnli', tokens)[0]
@@ -125,8 +141,9 @@ class Nubia:
         tensor_input = torch.tensor([[self.tokenizer. eos_token_id] +
                                      self.tokenizer.convert_tokens_to_ids(
                                          tokenize_input)]).cuda()
+        print(tensor_input.is_cuda)
         with torch.no_grad():
-            outputs = self.gpt_model(tensor_input.cuda(), labels=tensor_input)
+            outputs = self.gpt_model(tensor_input, labels=tensor_input)
             loss, logits = outputs[:2]
         return loss
 
