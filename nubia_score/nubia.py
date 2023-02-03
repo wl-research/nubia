@@ -71,11 +71,13 @@ class Nubia:
         self.roberta_STS = RobertaModel.from_pretrained(
             checkpoint_file='checkpoint_best.pt',
             model_name_or_path=ROBERTA_STS_PATH)
+        self.roberta_STS.to("cuda")
         self.roberta_STS.eval()
 
         self.roberta_MNLI = RobertaModel.from_pretrained(
             checkpoint_file='model_mnli.pt',
             model_name_or_path=ROBERTA_MNLI_PATH)
+        self.roberta_MNLI.to("cuda")
         self.roberta_MNLI.eval()
         self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         self.gpt_model = GPT2LMHeadModel.from_pretrained('gpt2')
@@ -83,9 +85,7 @@ class Nubia:
         self.agg_two = load(AGGREGATOR_2015_2017)
         self.agg_one_8_dim = load(AGGREGATOR_2015_2016_8_dim)
         self.agg_two_8_dim = load(AGGREGATOR_2015_2017_8_dim)
-
-        self.roberta_STS.to("cuda")
-        self.roberta_MNLI.to("cuda")
+        
         self.gpt_model.to("cuda")
         self.agg_one.to("cuda")
         self.agg_two.to("cuda")
