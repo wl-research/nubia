@@ -84,6 +84,10 @@ class Nubia:
         self.agg_one_8_dim = load(AGGREGATOR_2015_2016_8_dim)
         self.agg_two_8_dim = load(AGGREGATOR_2015_2017_8_dim)
 
+        self.roberta_STS.to("cuda")
+        self.roberta_MNLI.to("cuda")
+        self.gpt_model.to("cuda")
+
     @staticmethod
     def _download_progress_bar(current, total, width=80):
         print("Downloading: %d%% [%d / %d] bytes" % (
