@@ -95,19 +95,10 @@ class Nubia:
         self.agg_two_8_dim = load(AGGREGATOR_2015_2017_8_dim)
 
         self.gpt_model.to("cuda")
-        self.agg_one.to("cuda")
-        self.agg_two.to("cuda")
-        self.agg_one_8_dim.to("cuda")
-        self.agg_two_8_dim.to("cuda")
 
         print(self.roberta_STS.is_cuda)
         print(self.roberta_MNLI.is_cuda)
         print(self.gpt_model.is_cuda)
-        print(self.agg_one.is_cuda)
-        print(self.agg_two.is_cuda)
-        print(self.agg_one_8_dim.is_cuda)
-        print(self.agg_two_8_dim.is_cuda)
-
 
     @staticmethod
     def _download_progress_bar(current, total, width=80):
