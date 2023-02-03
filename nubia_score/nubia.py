@@ -121,7 +121,7 @@ class Nubia:
         tokenize_input = self.tokenizer.tokenize(text)
         tensor_input = torch.tensor([[self.tokenizer. eos_token_id] +
                                      self.tokenizer.convert_tokens_to_ids(
-                                         tokenize_input)])
+                                         tokenize_input)]).cuda()
         with torch.no_grad():
             outputs = self.gpt_model(tensor_input.cuda(), labels=tensor_input)
             loss, logits = outputs[:2]
@@ -142,7 +142,7 @@ class Nubia:
         len_hyp = len(hyp.split(" "))
 
         mnli_friendly = torch.nn.functional.softmax(
-            torch.tensor([mnli_zero, mnli_one, mnli_two]), dim=0).tolist()
+            torch.tensor([mnli_zero, mnli_one, mnli_two]), dim=0).tolist().cuda()
 
         neural_features_6_dim = np.array(
             [float(sim), float(mnli_zero), float(mnli_one), float(mnli_two),
